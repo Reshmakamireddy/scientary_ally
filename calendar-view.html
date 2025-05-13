@@ -1,0 +1,65 @@
+<div class="calendar-view" style="display: block;">
+    <style>
+        .month-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .month-btn {
+            background-color: #e9ecef;
+            color: #2c3e50;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .month-btn.active {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .month-btn:hover {
+            background-color: #d3d7db;
+        }
+
+        .conference-count {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+    </style>
+
+    <div class="month-buttons">
+        <button class="month-btn" onclick="showConferenceCount('May 2025')">May 2025</button>
+        <button class="month-btn" onclick="showConferenceCount('Jun 2025')">Jun 2025</button>
+        <button class="month-btn" onclick="showConferenceCount('Jul 2025')">Jul 2025</button>
+        <button class="month-btn" onclick="showConferenceCount('Aug 2025')">Aug 2025</button>
+        <button class="month-btn" onclick="showConferenceCount('Sep 2025')">Sep 2025</button>
+        <button class="month-btn" onclick="showConferenceCount('Oct 2025')">Oct 2025</button>
+    </div>
+    <div id="conferenceCount" class="conference-count"></div>
+
+    <script>
+        function showConferenceCount(month) {
+            let count = conferences.filter(conf => conf.month === month).length;
+            const conferenceCountDiv = document.getElementById('conferenceCount');
+            conferenceCountDiv.innerHTML = `Number of Conferences in ${month}: ${count}`;
+
+            const monthButtons = document.querySelectorAll('.month-btn');
+            monthButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === month) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Show count for the first month by default
+        showConferenceCount('May 2025');
+    </script>
+</div>

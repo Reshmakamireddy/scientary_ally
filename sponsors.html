@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsors</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            transition: width 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sidebar.collapsed .username,
+        .sidebar.collapsed .menu-text,
+        .sidebar.collapsed .chevron-toggle span {
+            display: none;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .toggle-icon {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .sidebar-menu a.active {
+            background-color: #1abc9c;
+        }
+
+        .submenu {
+            display: none;
+            background-color: #34495e;
+            padding-left: 30px;
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .submenu a {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .chevron-toggle {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: #ecf0f1;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            height: 60px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            transition: left 0.3s;
+            z-index: 900;
+        }
+
+        .header.collapsed {
+            left: 60px;
+        }
+
+        .welcome-text {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .header-icons i {
+            color: #6c757d;
+            margin: 0 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .header-icons i:hover {
+            color: #007bff;
+        }
+
+        .header-icons .fa-sign-out-alt {
+            color: #dc3545;
+        }
+
+        .main-content {
+            margin-top: 60px;
+            margin-left: 250px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+            transition: margin-left 0.3s;
+        }
+
+        .main-content.collapsed {
+            margin-left: 60px;
+        }
+
+        .sponsor-list {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .sponsor-list h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sponsor-list .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sponsor-list .add-btn,
+        .sponsor-list .back-btn,
+        .sponsor-list .cancel-btn,
+        .sponsor-list .submit-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sponsor-list .cancel-btn {
+            background-color: #6c757d;
+        }
+
+        .sponsor-list .add-btn:hover,
+        .sponsor-list .back-btn:hover,
+        .sponsor-list .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .sponsor-list .cancel-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .sponsor-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .sponsor-table thead {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .sponsor-table th,
+        .sponsor-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .sponsor-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .sponsor-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sponsor-table .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sponsor-table .view-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .sponsor-table .view-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .sponsor-table .edit-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .sponsor-table .edit-btn:hover {
+            background-color: #218838;
+        }
+
+        .sponsor-table .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .sponsor-table .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .sponsor-details,
+        .add-sponsor {
+            display: none;
+        }
+
+        .sponsor-details.visible,
+        .add-sponsor.visible {
+            display: block;
+        }
+
+        .sponsor-details p,
+        .add-sponsor label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .sponsor-details a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .sponsor-details a:hover {
+            text-decoration: underline;
+        }
+
+        .list-view {
+            display: block;
+        }
+
+        .list-view.hidden,
+        .sponsor-details.hidden,
+        .add-sponsor.hidden {
+            display: none;
+        }
+
+        .add-sponsor .form-group {
+            margin-bottom: 20px;
+        }
+
+        .add-sponsor .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .add-sponsor .form-group input,
+        .add-sponsor .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .add-sponsor .form-group input:focus,
+        .add-sponsor .form-group textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .add-sponsor .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .add-sponsor .form-group input:invalid,
+        .add-sponsor .form-group textarea:invalid {
+            border-color: #dc3545;
+        }
+
+        .add-sponsor .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="https://via.placeholder.com/30" alt="Logo" class="sidebar-logo">
+            <span class="username">username</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span class="menu-text">Dashboard</span> </a>
+                <!-- <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div> -->
+            </li>
+            <li>
+                <a href="index.html"><i class="fas fa-users"></i> <span class="menu-text">Conferences</span> </a>
+                <!-- <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div> -->
+            </li>
+            <li>
+                <a href="speakers.html"><i class="fas fa-microphone"></i> <span class="menu-text">Speakers</span> </a>
+                <!-- <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div> -->
+            </li>
+            <li>
+                <a href="sponsors.html" class="active"><i class="fas fa-handshake"></i> <span class="menu-text">Sponsors/Organizing</span> </a>
+                <!-- <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div> -->
+            </li>
+            <li>
+                <a href="javascript:void(0)"><i class="fas fa-bullhorn"></i> <span class="menu-text">Marketing</span> <i class="fas fa-caret-down toggle-icon float-end"></i></a>
+                <div class="submenu">
+                    <a href="#"><span class="menu-text">Email Marketing</span></a>
+                    <a href="#"><span class="menu-text">Whatsapp</span></a>
+                    <a href="#"><span class="menu-text">Bulk SMS</span></a>
+                </div>
+            </li>
+            <li>
+                <a href="reports.html"><i class="fas fa-chart-bar"></i> <span class="menu-text">Reports</span> </a>
+                <!-- <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div> -->
+            </li>
+            <li>
+                <a href="settings.html"><i class="fas fa-cog"></i> <span class="menu-text">Settings</span> <i class="fas fa-caret-down toggle-icon float-end"></i></a>
+                <div class="submenu">
+                    <a href="#"><span class="menu-text">Submenu 1</span></a>
+                    <a href="#"><span class="menu-text">Submenu 2</span></a>
+                </div>
+            </li>
+        </ul>
+        <div class="chevron-toggle" id="chevronToggle">
+            <i class="fas fa-chevron-left float-end"></i>
+        </div>
+    </div>
+
+    <div class="header" id="header">
+        <div class="welcome-text">Sponsors</div>
+        <div class="header-icons">
+            <i class="fas fa-search" data-bs-toggle="tooltip" title="Search"></i>
+            <i class="fas fa-sticky-note" data-bs-toggle="tooltip" title="Sticky Notes"></i>
+            <i class="fas fa-bell" data-bs-toggle="tooltip" title="Notifications"></i>
+            <i class="fas fa-sign-out-alt" data-bs-toggle="tooltip" title="Logout"></i>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid">
+            <div class="sponsor-list">
+                <h2>Sponsors</h2>
+                <div class="button-group">
+                    <a href="#" class="add-btn" onclick="showAddSponsorForm(); return false;"><i class="fas fa-plus"></i> Add New Sponsor</a>
+                </div>
+
+                <!-- List View -->
+                <div class="list-view" id="listView">
+                    <table class="sponsor-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sponsorList">
+                            <tr>
+                                <td>Alice Johnson</td>
+                                <td>TechCorp</td>
+                                <td>alice.johnson@techcorp.com</td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(1); return false;">View</a>
+                                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(1)">Edit</a>
+                                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(1)">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bob Smith</td>
+                                <td>Innovate Ltd</td>
+                                <td>bob.smith@innovateltd.com</td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(2); return false;">View</a>
+                                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(2)">Edit</a>
+                                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(2)">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Carol White</td>
+                                <td>FutureTech</td>
+                                <td>carol.white@futuretech.com</td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(3); return false;">View</a>
+                                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(3)">Edit</a>
+                                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(3)">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>David Brown</td>
+                                <td>GreenEnergy</td>
+                                <td>david.brown@greenenergy.com</td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(4); return false;">View</a>
+                                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(4)">Edit</a>
+                                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(4)">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Eve Davis</td>
+                                <td>HealthSolutions</td>
+                                <td>eve.davis@healthsolutions.com</td>
+                                <td>
+                                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(5); return false;">View</a>
+                                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(5)">Edit</a>
+                                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(5)">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sponsor Details Section -->
+                <div class="sponsor-details" id="sponsorDetails">
+                    <a href="#" class="back-btn" onclick="hideSponsorDetails()"><i class="fas fa-arrow-left"></i> Back to List</a>
+                    <h2>Sponsor Details</h2>
+                    <div id="sponsorInfo">
+                        <p><strong>Name:</strong> <span id="sponsorName"></span></p>
+                        <p><strong>Company:</strong> <span id="sponsorCompany"></span></p>
+                        <p><strong>Email:</strong> <span id="sponsorEmail"></span></p>
+                        <p><strong>Contact Number:</strong> <span id="sponsorContact"></span></p>
+                        <p><strong>Address:</strong> <span id="sponsorAddress"></span></p>
+                        <p><strong>Sponsorship Amount:</strong> <span id="sponsorAmount"></span></p>
+                        <p><strong>Website:</strong> <a id="sponsorWebsite" href="#" target="_blank"></a></p>
+                        <p><strong>Notes:</strong> <span id="sponsorNotes"></span></p>
+                    </div>
+                </div>
+
+                <!-- Add Sponsor Form Section -->
+                <div class="add-sponsor" id="addSponsorForm">
+                    <h2>Add New Sponsor</h2>
+                    <div id="addSponsorInputs">
+                        <div class="form-group">
+                            <label for="addSponsorName">Name <span style="color: #dc3545;">*</span></label>
+                            <input type="text" id="addSponsorName" placeholder="Enter name" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorCompany">Company <span style="color: #dc3545;">*</span></label>
+                            <input type="text" id="addSponsorCompany" placeholder="Enter company name" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorEmail">Email <span style="color: #dc3545;">*</span></label>
+                            <input type="email" id="addSponsorEmail" placeholder="Enter email (e.g., name@example.com)" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorContact">Contact Number <span style="color: #dc3545;">*</span></label>
+                            <input type="tel" id="addSponsorContact" placeholder="Enter contact number (e.g., +1-555-123-4567)" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorAddress">Address <span style="color: #dc3545;">*</span></label>
+                            <input type="text" id="addSponsorAddress" placeholder="Enter address" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorAmount">Sponsorship Amount ($) <span style="color: #dc3545;">*</span></label>
+                            <input type="number" id="addSponsorAmount" placeholder="Enter sponsorship amount (e.g., 5000)" min="0" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorWebsite">Website <span style="color: #dc3545;">*</span></label>
+                            <input type="url" id="addSponsorWebsite" placeholder="Enter website URL (e.g., https://example.com)" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="addSponsorNotes">Notes <span style="color: #dc3545;">*</span></label>
+                            <textarea id="addSponsorNotes" placeholder="Enter any additional notes" required aria-required="true"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button class="cancel-btn" onclick="hideAddSponsorForm()">Cancel</button>
+                            <button class="submit-btn" onclick="addSponsor()">Add Sponsor</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const header = document.getElementById('header');
+            const chevronToggle = document.getElementById('chevronToggle');
+
+            // Sidebar toggle functionality
+            function toggleSidebar() {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('collapsed');
+                header.classList.toggle('collapsed');
+                const icon = chevronToggle.querySelector('i');
+                icon.classList.toggle('fa-chevron-left');
+                icon.classList.toggle('fa-chevron-right');
+            }
+
+            chevronToggle.addEventListener('click', toggleSidebar);
+
+            // Sidebar submenu toggle
+            const menuItems = document.querySelectorAll('.sidebar-menu > li');
+            menuItems.forEach(item => {
+                const toggleIcon = item.querySelector('.toggle-icon');
+                const submenu = item.querySelector('.submenu');
+                if (toggleIcon && submenu) {
+                    toggleIcon.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        submenu.classList.toggle('active');
+                        toggleIcon.classList.toggle('collapsed');
+                    });
+                }
+            });
+
+            // Initialize tooltips
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach(tooltipTriggerEl => {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Sponsor data
+        let sponsors = [
+            {
+                id: 1,
+                name: "Alice Johnson",
+                company: "TechCorp",
+                email: "alice.johnson@techcorp.com",
+                contact: "+1-555-123-4567",
+                address: "123 Tech Road, Silicon Valley, CA 90210, USA",
+                amount: "10000",
+                website: "https://techcorp.com",
+                notes: "Platinum sponsor for the annual tech conference."
+            },
+            {
+                id: 2,
+                name: "Bob Smith",
+                company: "Innovate Ltd",
+                email: "bob.smith@innovateltd.com",
+                contact: "+1-555-234-5678",
+                address: "456 Innovation Ave, New York, NY 10001, USA",
+                amount: "7500",
+                website: "https://innovateltd.com",
+                notes: "Gold sponsor supporting innovation workshops."
+            },
+            {
+                id: 3,
+                name: "Carol White",
+                company: "FutureTech",
+                email: "carol.white@futuretech.com",
+                contact: "+1-555-345-6789",
+                address: "789 Future Lane, Austin, TX 73301, USA",
+                amount: "5000",
+                website: "https://futuretech.com",
+                notes: "Silver sponsor for tech expo."
+            },
+            {
+                id: 4,
+                name: "David Brown",
+                company: "GreenEnergy",
+                email: "david.brown@greenenergy.com",
+                contact: "+1-555-456-7890",
+                address: "101 Green Street, Portland, OR 97201, USA",
+                amount: "3000",
+                website: "https://greenenergy.com",
+                notes: "Bronze sponsor focusing on sustainability."
+            },
+            {
+                id: 5,
+                name: "Eve Davis",
+                company: "HealthSolutions",
+                email: "eve.davis@healthsolutions.com",
+                contact: "+1-555-567-8901",
+                address: "202 Health Blvd, Chicago, IL 60601, USA",
+                amount: "2000",
+                website: "https://healthsolutions.com",
+                notes: "Sponsor for healthcare panel discussion."
+            }
+        ];
+
+        // View a sponsor
+        function viewSponsor(id) {
+            const sponsor = sponsors.find(s => s.id === id);
+            if (sponsor) {
+                document.getElementById('sponsorName').textContent = sponsor.name;
+                document.getElementById('sponsorCompany').textContent = sponsor.company;
+                document.getElementById('sponsorEmail').textContent = sponsor.email;
+                document.getElementById('sponsorContact').textContent = sponsor.contact;
+                document.getElementById('sponsorAddress').textContent = sponsor.address;
+                document.getElementById('sponsorAmount').textContent = `$${sponsor.amount}`;
+                document.getElementById('sponsorWebsite').href = sponsor.website;
+                document.getElementById('sponsorWebsite').textContent = sponsor.website;
+                document.getElementById('sponsorNotes').textContent = sponsor.notes;
+
+                document.getElementById('listView').classList.add('hidden');
+                document.getElementById('addSponsorForm').classList.add('hidden');
+                document.getElementById('sponsorDetails').classList.add('visible');
+            }
+        }
+
+        // Hide sponsor details and show the list
+        function hideSponsorDetails() {
+            document.getElementById('listView').classList.remove('hidden');
+            document.getElementById('sponsorDetails').classList.remove('visible');
+            document.getElementById('addSponsorForm').classList.remove('visible');
+        }
+
+        // Show the add sponsor form
+        function showAddSponsorForm() {
+            document.getElementById('listView').classList.add('hidden');
+            document.getElementById('sponsorDetails').classList.add('hidden');
+            document.getElementById('addSponsorForm').classList.add('visible');
+
+            // Clear the form fields
+            document.getElementById('addSponsorName').value = '';
+            document.getElementById('addSponsorCompany').value = '';
+            document.getElementById('addSponsorEmail').value = '';
+            document.getElementById('addSponsorContact').value = '';
+            document.getElementById('addSponsorAddress').value = '';
+            document.getElementById('addSponsorAmount').value = '';
+            document.getElementById('addSponsorWebsite').value = '';
+            document.getElementById('addSponsorNotes').value = '';
+        }
+
+        // Hide the add sponsor form and show the list
+        function hideAddSponsorForm() {
+            document.getElementById('listView').classList.remove('hidden');
+            document.getElementById('sponsorDetails').classList.remove('visible');
+            document.getElementById('addSponsorForm').classList.remove('visible');
+        }
+
+        // Add a new sponsor
+        function addSponsor() {
+            const name = document.getElementById('addSponsorName').value.trim();
+            const company = document.getElementById('addSponsorCompany').value.trim();
+            const email = document.getElementById('addSponsorEmail').value.trim();
+            const contact = document.getElementById('addSponsorContact').value.trim();
+            const address = document.getElementById('addSponsorAddress').value.trim();
+            const amount = document.getElementById('addSponsorAmount').value.trim();
+            const website = document.getElementById('addSponsorWebsite').value.trim();
+            const notes = document.getElementById('addSponsorNotes').value.trim();
+
+            // Validation
+            if (!name || !company || !email || !contact || !address || !amount || !website || !notes) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            // URL format validation for Website
+            const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+            if (!urlRegex.test(website)) {
+                alert('Please enter a valid website URL.');
+                return;
+            }
+
+            // Sponsorship amount should be a positive number
+            const amountNum = parseFloat(amount);
+            if (isNaN(amountNum) || amountNum <= 0) {
+                alert('Please enter a valid positive amount for sponsorship.');
+                return;
+            }
+
+            // Create new sponsor object
+            const newId = sponsors.length ? Math.max(...sponsors.map(s => s.id)) + 1 : 1;
+            const newSponsor = {
+                id: newId,
+                name,
+                company,
+                email,
+                contact,
+                address,
+                amount: amountNum.toString(),
+                website,
+                notes
+            };
+
+            // Add to sponsors array
+            sponsors.push(newSponsor);
+
+            // Add to table
+            const tableBody = document.getElementById('sponsorList');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${company}</td>
+                <td>${email}</td>
+                <td>
+                    <a href="#" class="action-btn view-btn" onclick="viewSponsor(${newId}); return false;">View</a>
+                    <a href="#" class="action-btn edit-btn" onclick="editSponsor(${newId})">Edit</a>
+                    <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(${newId})">Delete</a>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = `Sponsor "${name}" added successfully!`;
+            const listView = document.getElementById('listView');
+            listView.insertBefore(successMessage, listView.firstChild);
+
+            // Hide form and show list
+            hideAddSponsorForm();
+
+            // Fade out success message after 3 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('visible');
+                successMessage.remove();
+            }, 3000);
+        }
+
+        // Edit a sponsor
+        function editSponsor(id) {
+            alert('Edit sponsor with ID: ' + id);
+        }
+
+        // Delete a sponsor
+        function deleteSponsor(id) {
+            if (confirm('Are you sure you want to delete sponsor with ID: ' + id + '?')) {
+                alert('Sponsor with ID: ' + id + ' deleted successfully!');
+                sponsors = sponsors.filter(s => s.id !== id);
+                const row = document.querySelector(`#sponsorList tr:nth-child(${id})`);
+                if (row) {
+                    row.remove();
+                }
+                // Re-render the table to fix row indices
+                const tableBody = document.getElementById('sponsorList');
+                tableBody.innerHTML = '';
+                sponsors.forEach(sponsor => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${sponsor.name}</td>
+                        <td>${sponsor.company}</td>
+                        <td>${sponsor.email}</td>
+                        <td>
+                            <a href="#" class="action-btn view-btn" onclick="viewSponsor(${sponsor.id}); return false;">View</a>
+                            <a href="#" class="action-btn edit-btn" onclick="editSponsor(${sponsor.id})">Edit</a>
+                            <a href="#" class="action-btn delete-btn" onclick="deleteSponsor(${sponsor.id})">Delete</a>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

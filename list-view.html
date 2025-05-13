@@ -1,0 +1,97 @@
+<div class="list-view" style="display: block;">
+    <style>
+        .conference-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .conference-table thead {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .conference-table th,
+        .conference-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .conference-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .conference-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .conference-table .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .conference-table .view-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .conference-table .view-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .conference-table .edit-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .conference-table .edit-btn:hover {
+            background-color: #218838;
+        }
+
+        .conference-table .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .conference-table .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+
+    <table class="conference-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Conference Name</th>
+                <th>Venue</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="conferenceList"></tbody>
+    </table>
+
+    <script>
+        const tbody = document.getElementById('conferenceList');
+        conferences.forEach(conf => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-month', conf.month);
+            row.innerHTML = `
+                <td>${conf.date}</td>
+                <td>${conf.name}</td>
+                <td>${conf.venue}</td>
+                <td>
+                    <a href="#" class="action-btn view-btn" onclick="viewConference(${conf.id})">View</a>
+                    <a href="#" class="action-btn edit-btn" onclick="editConference(${conf.id})">Edit</a>
+                    <a href="#" class="action-btn delete-btn" onclick="deleteConference(${conf.id})">Remove</a>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    </script>
+</div>
